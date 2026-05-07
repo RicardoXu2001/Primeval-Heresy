@@ -1,0 +1,10 @@
+{
+  "name": "primeval-heresy",
+  "version": "1.0.0",
+  "description": "Primeval Heresy - Roguelike 21点卡牌游戏",
+  "scripts": {
+    "start": "npx -y serve . -l 3000"
+  },
+  "author": "",
+  "license": "ISC"
+}

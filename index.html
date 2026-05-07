@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primeval Heresy | 原初异端</title>
+  <meta name="description" content="Primeval Heresy - Roguelike 21点卡牌游戏。在被古神封印的古堡中挑战使徒，收集印记与遗物，揭开真正的结局。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="game-container">
+
+  <!-- ===== TITLE SCREEN ===== -->
+  <div id="screen-title" class="screen active">
+    <div class="title-container">
+      <h1 class="game-title">Primeval Heresy</h1>
+      <p class="game-subtitle">原初异端</p>
+      <div class="ornament">✧ ✦ ✧</div>
+      <p id="title-intro" class="dialogue-text" style="max-width:500px;margin:0 auto 2rem;font-size:1rem;"></p>
+      <button class="btn btn-primary" onclick="Game.showRelicSelect()">踏入古堡</button>
+      <p id="run-count" class="run-count"></p>
+    </div>
+  </div>
+
+  <!-- ===== RELIC SELECT ===== -->
+  <div id="screen-relics" class="screen">
+    <div class="panel" style="max-width:850px;width:100%;">
+      <h2 class="panel-title">遗物选择</h2>
+      <p style="text-align:center;color:var(--text-secondary);margin-bottom:0.5rem;">选择最多3件遗物装备（点击切换）</p>
+      <p id="exp-display" style="text-align:center;color:var(--gold-dim);font-size:0.85rem;margin-bottom:1rem;"></p>
+      <div id="relic-grid" class="relic-grid"></div>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <button class="btn" onclick="Game.startRun()">开始轮回</button>
+      </div>
+      <div style="text-align:center;margin-top:1rem;">
+        <p style="color:var(--text-dim);font-size:0.8rem;">消耗经验值解锁新遗物：</p>
+        <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:0.5rem;flex-wrap:wrap;" id="unlock-btns"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HALL ===== -->
+  <div id="screen-hall" class="screen">
+    <div class="hall-layout">
+      <h2 class="hall-title">古堡大厅</h2>
+      <p id="hall-desc" class="hall-description"></p>
+      <div id="sigils-bar" class="sigils-bar"></div>
+      <div id="rooms-grid" class="rooms-grid"></div>
+      <div class="special-hint" style="max-width:400px;margin:0 auto;">
+        提示：在每个房间达成特殊胜利条件，按正确顺序挑战使徒，即可开启真·结局之路
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ROOM INTRO ===== -->
+  <div id="screen-room-intro" class="screen">
+    <div class="panel" style="max-width:600px;width:100%;">
+      <h2 id="room-title" class="panel-title"></h2>
+      <p id="room-era" style="text-align:center;color:var(--text-dim);font-size:0.85rem;letter-spacing:0.2em;margin-bottom:1.5rem;"></p>
+      <p id="room-desc" style="color:var(--text-primary);line-height:1.8;margin-bottom:1.5rem;"></p>
+      <div style="text-align:center;margin-bottom:1rem;">
+        <span id="apostle-name" style="font-family:var(--font-heading);color:var(--gold);font-size:1.1rem;"></span>
+        <br>
+        <span id="apostle-title" style="color:var(--text-dim);font-size:0.85rem;font-style:italic;"></span>
+      </div>
+      <div id="dialogue-box" class="dialogue-box">
+        <div class="dialogue-speaker"></div>
+        <div class="dialogue-text"></div>
+      </div>
+      <p id="room-hint" class="special-hint"></p>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <button class="btn btn-danger" onclick="Game.startBattle()">开始对决</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BATTLE ===== -->
+  <div id="screen-battle" class="screen">
+    <div class="battle-layout">
+      <div class="opponent-area">
+        <p id="battle-opponent-name" class="area-label"></p>
+        <div id="dealer-cards" class="card-area"></div>
+        <div id="dealer-score" class="score-display">?</div>
+      </div>
+      <div class="battle-divider">
+        <span id="round-display" class="round-info"></span>
+      </div>
+      <div id="sigils-bar-battle" class="sigils-bar"></div>
+      <div class="player-area" style="position:relative;">
+        <p class="area-label">你的手牌</p>
+        <div id="player-cards" class="card-area"></div>
+        <div id="player-score" class="score-display">0</div>
+        <div id="next-card-peek" class="next-card-peek" style="display:none;"></div>
+      </div>
+      <div class="action-buttons">
+        <button id="btn-hit" class="btn" onclick="Game.hit()">要牌</button>
+        <button id="btn-stand" class="btn" onclick="Game.stand()">停牌</button>
+        <button id="btn-double" class="btn btn-danger" onclick="Game.double()">加倍</button>
+      </div>
+      <div id="ability-buttons" class="ability-buttons"></div>
+    </div>
+  </div>
+
+  <!-- ===== SIGIL SELECT ===== -->
+  <div id="screen-sigil" class="screen">
+    <div style="text-align:center;max-width:800px;">
+      <h2 class="panel-title" style="margin-bottom:0.5rem;">选择印记</h2>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">从以下印记中选择一个，本轮游戏内生效</p>
+      <div id="sigil-grid" class="sigil-grid"></div>
+    </div>
+  </div>
+
+  <!-- ===== ENDING ===== -->
+  <div id="screen-ending" class="screen">
+    <div class="ending-container">
+      <div class="ornament">✧ ✦ ✧</div>
+      <h2 id="ending-title" class="ending-title"></h2>
+      <p id="ending-text" class="ending-text"></p>
+      <button id="ending-btn" class="btn btn-primary">再次轮回</button>
+    </div>
+  </div>
+
+  <!-- ===== RESULT OVERLAY ===== -->
+  <div id="result-overlay" class="result-overlay">
+    <div class="result-content">
+      <h2 class="result-title"></h2>
+      <p class="result-desc"></p>
+      <button class="btn result-btn">继续</button>
+    </div>
+  </div>
+
+  <!-- ===== PAUSE MENU ===== -->
+  <div id="pause-overlay" class="pause-overlay">
+    <div class="pause-content">
+      <h2 class="panel-title">游戏暂停</h2>
+      <div class="ornament">✧ ✦ ✧</div>
+      <div style="display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem;align-items:center;">
+        <button class="btn" onclick="Game.resumeGame()" style="width:200px;">继续游戏</button>
+        <button class="btn btn-danger" onclick="Game.quitToTitle()" style="width:200px;">退出到主页</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Button (visible during gameplay) -->
+  <button id="menu-btn" class="menu-btn" onclick="Game.pauseGame()" title="暂停 (Esc)">☰</button>
+
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
